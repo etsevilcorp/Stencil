@@ -1,6 +1,9 @@
 package stencil
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 // use errors.AsType to check error(gatekeeping it for 1.26+)
 type ValidationError struct {
@@ -14,22 +17,18 @@ func (e *ValidationError) Error() string {
 
 // validates all fields. If validation didn't succeed returns an error
 func (s Stencil) Validate() error {
-	if !s.Anchor.Valid() {
-		return &ValidationError{
-			Field: "anchor",
-			Given: string(s.Anchor),
+	v := reflect.ValueOf(s)
+	t := v.Type()
+	for i := 0; i < v.NumField(); i++ {
+		enum, ok := v.Field(i).Interface().(Enum)
+		if !ok {
+			continue
 		}
-	}
-	if !s.MaxHandling.Valid() {
-		return &ValidationError{
-			Field: "max-handling",
-			Given: string(s.MaxHandling),
-		}
-	}
-	if !s.MinHandling.Valid() {
-		return &ValidationError{
-			Field: "min-handling",
-			Given: string(s.MinHandling),
+		if !enum.Valid() {
+			return &ValidationError{
+				Field: t.Field(i).Tag.Get("toml"),
+				Given: fmt.Sprintf("%v", enum),
+			}
 		}
 	}
 

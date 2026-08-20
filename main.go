@@ -1,9 +1,9 @@
 package main
 
 import (
-	"log"
 	"os"
 
+	"github.com/etsevilcorp/stencil/engine"
 	"github.com/etsevilcorp/stencil/stencil"
 	toml "github.com/pelletier/go-toml/v2"
 )
@@ -20,7 +20,8 @@ func main() {
 		panic(err)
 	}
 
-	for name, stencil := range stencils {
-		log.Printf("%v: %+v, anchor empty: %v", name, stencil, stencil.Anchor == "")
+	err = engine.Position(stencils, "")
+	if err != nil {
+		panic(err)
 	}
 }

@@ -34,7 +34,7 @@ func ProcessSingle(base draw.Image, baseName string, stencils map[string]string,
 			return err
 		}
 
-		draw.Draw(base, base.Bounds(), stenciling, image.Pt(cfgs[name].X, cfgs[name].Y), draw.Src)
+		draw.Draw(base, base.Bounds(), stenciling, image.Pt(-cfgs[name].X, -cfgs[name].Y), draw.Src)
 	}
 
 	outputFile, err := os.Create(strings.TrimSuffix(nameRes.String(), "-") + ".png")

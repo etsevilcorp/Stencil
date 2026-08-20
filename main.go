@@ -20,7 +20,7 @@ func main() {
 		panic(err)
 	}
 
-	err = engine.Position(stencils, "")
+	err = engine.Position(stencils, "./base.png")
 	if err != nil {
 		panic(err)
 	}

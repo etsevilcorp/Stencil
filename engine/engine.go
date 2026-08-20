@@ -2,29 +2,20 @@ package engine
 
 import (
 	"fmt"
+	"image"
 	_ "image/jpeg"
 	_ "image/png"
 	"log"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/etsevilcorp/stencil/stencil"
 )
 
 // Position returs error on fail(of any kind).
-// stencils are parsed stencil map, baseImage is path to base image
-func Position(stencils stencil.Stencils, baseImage string) error {
-	// baseFile, err := os.Open(baseImage)
-	// if err != nil {
-	// 	return fmt.Errorf("position: failed to load an image %v: %w", baseImage, err)
-	// }
-	// defer baseFile.Close()
-
-	// base, name, err := image.Decode(baseFile)
-	// if err != nil {
-	// 	return fmt.Errorf("position: failed to convert file to an image %v: %w", baseImage, err)
-	// }
-	// baseDraw := ConvertToDrawImage(base)
-
+// stencils are parsed stencil map, basePath is path to base image
+func Position(stencils stencil.Stencils, basePath string) error {
 	combosCount := 1
 	entriesMatrix := make([]struct {
 		entries []os.DirEntry
@@ -51,5 +42,27 @@ func Position(stencils stencil.Stencils, baseImage string) error {
 	combos := make([]map[string]string, combosCount)
 
 	combinations(entriesMatrix, 0, map[string]string{}, combos, 0)
-	panic(fmt.Sprintf("%+v", combos))
+
+	baseFile, err := os.Open(basePath)
+	if err != nil {
+		return fmt.Errorf("position: failed to load an image %v: %w", basePath, err)
+	}
+	defer baseFile.Close()
+
+	base, _, err := image.Decode(baseFile)
+	if err != nil {
+		return fmt.Errorf("position: failed to convert file to an image %v: %w", basePath, err)
+	}
+	baseDraw := ConvertToDrawImage(base)
+
+	bName := strings.TrimSuffix(filepath.Base(basePath), filepath.Ext(basePath))
+	for _, combo := range combos {
+		b := CopyInterface(baseDraw)
+		err := ProcessSingle(b, bName, combo, stencils)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

@@ -33,3 +33,7 @@ go.work.sum
 
 *.toml
 completly-random-table
+base*
+*.png
+*.jpeg
+*.jpg

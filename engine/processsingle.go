@@ -19,6 +19,12 @@ func ProcessSingle(base draw.Image, baseName string, stencils map[string]string,
 	nameRes.WriteRune('-')
 
 	for name, path := range stencils {
+		cfg := cfgs[name]
+		err := cfg.Validate()
+		if err != nil {
+			return err
+		}
+
 		stFile, err := os.Open(filepath.Join(name, path))
 		if err != nil {
 			return err
@@ -34,7 +40,12 @@ func ProcessSingle(base draw.Image, baseName string, stencils map[string]string,
 			return err
 		}
 
-		draw.Draw(base, base.Bounds(), stenciling, image.Pt(-cfgs[name].X, -cfgs[name].Y), draw.Src)
+		bounds := stenciling.Bounds()
+		if cfg.MaxHeight != nil && *cfg.MaxHeight < bounds.Max.Y || cfg.MaxWidth != nil && *cfg.MaxWidth < bounds.Max.X {
+			stenciling = cfg.HandleMax(stenciling)
+		}
+
+		draw.Draw(base, base.Bounds(), stenciling, cfg.Anchor.Position(cfg.X, cfg.Y, bounds.Dx(), bounds.Dy()), draw.Src)
 	}
 
 	outputFile, err := os.Create(strings.TrimSuffix(nameRes.String(), "-") + ".png")

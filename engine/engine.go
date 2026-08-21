@@ -53,11 +53,11 @@ func Position(stencils stencil.Stencils, basePath string) error {
 	if err != nil {
 		return fmt.Errorf("position: failed to convert file to an image %v: %w", basePath, err)
 	}
-	baseDraw := ConvertToDrawImage(base)
+	baseDraw := ConvertToRGBA(base)
 
 	bName := strings.TrimSuffix(filepath.Base(basePath), filepath.Ext(basePath))
 	for _, combo := range combos {
-		b := CopyInterface(baseDraw)
+		b := CopyRGBA(baseDraw)
 		err := ProcessSingle(b, bName, combo, stencils)
 		if err != nil {
 			return err

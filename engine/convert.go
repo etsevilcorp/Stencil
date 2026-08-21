@@ -5,15 +5,13 @@ import (
 	"image/draw"
 )
 
-func ConvertToDrawImage(src image.Image) draw.Image {
-	if dimg, ok := src.(draw.Image); ok {
-		return dimg
+func ConvertToRGBA(src image.Image) *image.RGBA {
+	if rgba, ok := src.(*image.RGBA); ok {
+		return rgba
 	}
 
 	bounds := src.Bounds()
 	dst := image.NewRGBA(bounds)
-
 	draw.Draw(dst, bounds, src, bounds.Min, draw.Src)
-
 	return dst
 }

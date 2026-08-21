@@ -1,10 +1,12 @@
 package engine
 
 import (
+	"fmt"
 	"image"
 	"image/draw"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	_ "image/jpeg"
@@ -14,10 +16,8 @@ import (
 )
 
 func ProcessSingle(base draw.Image, baseName string, stencils map[string]string, cfgs stencil.Stencils) error {
-	var nameRes strings.Builder
-	nameRes.WriteString(baseName)
-	nameRes.WriteRune('-')
 
+	var nameRes = make(sort.StringSlice, 0, len(stencils))
 	for name, path := range stencils {
 		cfg := cfgs[name]
 		err := cfg.Validate()
@@ -29,11 +29,7 @@ func ProcessSingle(base draw.Image, baseName string, stencils map[string]string,
 		if err != nil {
 			return err
 		}
-		_, err = nameRes.WriteString(strings.TrimSuffix(filepath.Base(path), filepath.Ext(path)))
-		if err != nil {
-			return err
-		}
-		nameRes.WriteRune('-')
+		nameRes = append(nameRes, (strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))))
 
 		stenciling, _, err := image.Decode(stFile)
 		if err != nil {
@@ -50,8 +46,9 @@ func ProcessSingle(base draw.Image, baseName string, stencils map[string]string,
 
 		draw.Draw(base, base.Bounds(), stenciling, cfg.Anchor.Position(cfg.X, cfg.Y, bounds.Dx(), bounds.Dy()), draw.Src)
 	}
+	nameRes.Sort()
 
-	outputFile, err := os.Create(strings.TrimSuffix(nameRes.String(), "-") + ".png")
+	outputFile, err := os.Create(fmt.Sprintf("%v-%v", baseName, strings.Join(nameRes, "-")) + ".png")
 	if err != nil {
 		return err
 	}

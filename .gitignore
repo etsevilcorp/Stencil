@@ -32,7 +32,7 @@ go.work.sum
 .vscode/
 
 *.toml
-completly-random-table
+*-table
 base*
 *.png
 *.jpeg

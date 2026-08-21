@@ -44,6 +44,9 @@ func ProcessSingle(base draw.Image, baseName string, stencils map[string]string,
 		if cfg.MaxHeight != nil && *cfg.MaxHeight < bounds.Max.Y || cfg.MaxWidth != nil && *cfg.MaxWidth < bounds.Max.X {
 			stenciling = cfg.HandleMax(stenciling)
 		}
+		if cfg.MinHeight != nil && *cfg.MinHeight > bounds.Max.Y || cfg.MinWidth != nil && *cfg.MinWidth > bounds.Max.X {
+			stenciling = cfg.HandleMin(stenciling)
+		}
 
 		draw.Draw(base, base.Bounds(), stenciling, cfg.Anchor.Position(cfg.X, cfg.Y, bounds.Dx(), bounds.Dy()), draw.Src)
 	}

@@ -41,7 +41,8 @@ func Position(stencils stencil.Stencils, basePath string) error {
 	// []map[name_of_the_element]path
 	combos := make([]map[string]string, combosCount)
 
-	combinations(entriesMatrix, 0, map[string]string{}, combos, 0)
+	var accum int = 0
+	combinations(entriesMatrix, 0, map[string]string{}, combos, &accum)
 
 	baseFile, err := os.Open(basePath)
 	if err != nil {

@@ -12,6 +12,6 @@ func ConvertToRGBA(src image.Image) *image.RGBA {
 
 	bounds := src.Bounds()
 	dst := image.NewRGBA(bounds)
-	draw.Draw(dst, bounds, src, bounds.Min, draw.Src)
+	draw.Draw(dst, bounds, src, bounds.Min, draw.Over)
 	return dst
 }

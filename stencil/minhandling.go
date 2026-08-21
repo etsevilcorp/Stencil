@@ -40,7 +40,7 @@ func (s Stencil) HandleMin(i image.Image) image.Image {
 		crRect := image.Rect(0, 0, endX, endY)
 		newImage := image.NewRGBA(image.Rect(0, 0, crRect.Dx(), crRect.Dy()))
 
-		drawx.CatmullRom.Scale(newImage, crRect, i, bounds, draw.Src, nil)
+		drawx.CatmullRom.Scale(newImage, crRect, i, bounds, draw.Over, nil)
 		return newImage
 	case Repeat:
 		bounds := i.Bounds()
@@ -60,7 +60,7 @@ func (s Stencil) HandleMin(i image.Image) image.Image {
 		// i already taken
 		for row := range int(math.Ceil(float64(endX) / float64(bounds.Dx()))) {
 			for col := range int(math.Ceil(float64(endY) / float64(bounds.Dy()))) {
-				draw.Draw(newImg, dstRect, i, image.Pt(-(sizeX*row), -(sizeY*col)), draw.Src)
+				draw.Draw(newImg, dstRect, i, image.Pt(-(sizeX*row), -(sizeY*col)), draw.Over)
 			}
 		}
 
@@ -81,7 +81,7 @@ func (s Stencil) HandleMin(i image.Image) image.Image {
 
 		dstRect := image.Rect(0, 0, int(math.Round(float64(endX)*change)), int(math.Round(float64(endY)*change)))
 		newImg := image.NewRGBA(dstRect)
-		drawx.CatmullRom.Scale(newImg, dstRect, i, bounds, draw.Src, nil)
+		drawx.CatmullRom.Scale(newImg, dstRect, i, bounds, draw.Over, nil)
 
 		return newImg
 	}

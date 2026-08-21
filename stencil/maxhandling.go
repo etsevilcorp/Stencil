@@ -49,7 +49,7 @@ func (s Stencil) HandleMax(i image.Image) image.Image {
 		crRect := image.Rect(0, 0, endX, endY)
 		cropped := interfaceSub.SubImage(crRect)
 		newImage := image.NewRGBA(image.Rect(0, 0, crRect.Dx(), crRect.Dy()))
-		draw.Draw(newImage, newImage.Bounds(), cropped, crRect.Min, draw.Src)
+		draw.Draw(newImage, newImage.Bounds(), cropped, crRect.Min, draw.Over)
 		return newImage
 	case Compress:
 		bounds := i.Bounds()
@@ -63,7 +63,7 @@ func (s Stencil) HandleMax(i image.Image) image.Image {
 
 		dstRect := image.Rect(0, 0, endX, endY)
 		newImg := image.NewRGBA(dstRect)
-		drawx.CatmullRom.Scale(newImg, dstRect, i, bounds, draw.Src, nil)
+		drawx.CatmullRom.Scale(newImg, dstRect, i, bounds, draw.Over, nil)
 
 		return newImg
 	case CompressAspect:
@@ -83,7 +83,7 @@ func (s Stencil) HandleMax(i image.Image) image.Image {
 
 		dstRect := image.Rect(0, 0, int(math.Round(float64(endX)*change)), int(math.Round(float64(endY)*change)))
 		newImg := image.NewRGBA(dstRect)
-		drawx.CatmullRom.Scale(newImg, dstRect, i, bounds, draw.Src, nil)
+		drawx.CatmullRom.Scale(newImg, dstRect, i, bounds, draw.Over, nil)
 
 		return newImg
 	}

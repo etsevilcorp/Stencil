@@ -13,7 +13,7 @@ type Stencil struct {
 	MinWidth    *int        `toml:"min-width"`
 	MinHandling MinHandling `toml:"min-handling"`
 
-	ZIndex *int `toml:"z-index"`
+	ZIndex int `toml:"z-index"`
 
 	// misc
 	// rotation

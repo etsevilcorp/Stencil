@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"log"
 	"os"
 
 	"github.com/etsevilcorp/stencil/engine"
@@ -9,19 +11,25 @@ import (
 )
 
 func main() {
-	buf, err := os.ReadFile("./test.toml")
+	st := flag.String("stencil", "./stencil.toml", "Stencil to use")
+	base := flag.String("base", "./base.png", "Base image to attach assets to")
+	out := flag.String("out", "./", "Where to output")
+
+	flag.Parse()
+
+	buf, err := os.ReadFile(*st)
 	if err != nil {
-		panic(err)
+		log.Panic(err.Error())
 	}
 
-	stencils := make(stencil.Stencils, 1)
+	stencils := make(stencil.Stencils)
 	err = toml.Unmarshal(buf, &stencils)
 	if err != nil {
-		panic(err)
+		log.Panic(err.Error())
 	}
 
-	err = engine.Position(stencils, "./base.png")
+	err = engine.Position(stencils, *base, *out)
 	if err != nil {
-		panic(err)
+		log.Panic(err.Error())
 	}
 }

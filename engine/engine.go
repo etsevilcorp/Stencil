@@ -15,7 +15,7 @@ import (
 
 // Position returs error on fail(of any kind).
 // stencils are parsed stencil map, basePath is path to base image
-func Position(stencils stencil.Stencils, basePath string) error {
+func Position(stencils stencil.Stencils, basePath string, out string) error {
 	combosCount := 1
 	entriesMatrix := make([]struct {
 		entries []os.DirEntry
@@ -59,7 +59,7 @@ func Position(stencils stencil.Stencils, basePath string) error {
 	bName := strings.TrimSuffix(filepath.Base(basePath), filepath.Ext(basePath))
 	for _, combo := range combos {
 		b := CopyRGBA(baseDraw)
-		err := ProcessSingle(b, bName, combo, stencils)
+		err := ProcessSingle(b, bName, combo, stencils, out)
 		if err != nil {
 			return err
 		}

@@ -12,7 +12,7 @@ import (
 	"github.com/etsevilcorp/stencil/stencil"
 )
 
-func ProcessSingle(base draw.Image, baseName string, stencils map[string]string, cfgs stencil.Stencils) error {
+func ProcessSingle(base draw.Image, baseName string, stencils map[string]string, cfgs stencil.Stencils, out string) error {
 	stencilsSorted := sortNames(stencils, cfgs)
 
 	var nameRes = make(sort.StringSlice, 0, len(stencils))
@@ -44,7 +44,7 @@ func ProcessSingle(base draw.Image, baseName string, stencils map[string]string,
 	}
 	nameRes.Sort()
 
-	err := createImage(fmt.Sprintf("%v-%v", baseName, strings.Join(nameRes, "-"))+".png", base)
+	err := createImage(filepath.Join(out, fmt.Sprintf("%v-%v", baseName, strings.Join(nameRes, "-"))+".png"), base)
 
 	return err
 }

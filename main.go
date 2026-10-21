@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/etsevilcorp/stencil/engine"
 	"github.com/etsevilcorp/stencil/stencil"
@@ -24,6 +25,11 @@ func main() {
 
 	stencils := make(stencil.Stencils)
 	err = toml.Unmarshal(buf, &stencils)
+	if err != nil {
+		log.Panic(err.Error())
+	}
+
+	err = os.MkdirAll(filepath.Dir(*out), 0755)
 	if err != nil {
 		log.Panic(err.Error())
 	}

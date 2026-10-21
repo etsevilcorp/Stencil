@@ -18,7 +18,7 @@ const (
 
 func (mh MaxHandling) Valid() bool {
 	switch mh {
-	case Clip, Compress, CompressAspect:
+	case Clip, Compress, CompressAspect, "":
 		return true
 	default:
 		return false

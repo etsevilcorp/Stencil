@@ -31,7 +31,7 @@ func (s Stencil) Validate() error {
 	v := reflect.ValueOf(s)
 	t := v.Type()
 	for i := 0; i < v.NumField(); i++ {
-		enum, ok := v.Field(i).Interface().(Enum)
+		enum, ok := reflect.TypeAssert[Enum](v.Field(i))
 		if !ok {
 			continue
 		}

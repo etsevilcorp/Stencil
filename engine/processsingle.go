@@ -39,6 +39,7 @@ func ProcessSingle(base draw.Image, baseName string, stencils map[string]string,
 		if !cfg.OutMin(bounds) {
 			stenciling = cfg.HandleMin(stenciling)
 		}
+		bounds = stenciling.Bounds() // after minmax
 
 		draw.Draw(base, base.Bounds(), stenciling, cfg.Anchor.Position(cfg.X, cfg.Y, bounds.Dx(), bounds.Dy()), draw.Over)
 	}

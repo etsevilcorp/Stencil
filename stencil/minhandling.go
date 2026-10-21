@@ -18,7 +18,7 @@ const (
 
 func (mh MinHandling) Valid() bool {
 	switch mh {
-	case Stretch, StretchAspect, Repeat:
+	case Stretch, StretchAspect, Repeat, "":
 		return true
 	default:
 		return false

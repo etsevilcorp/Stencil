@@ -24,7 +24,7 @@ func Position(stencils stencil.Stencils, basePath string, out string) error {
 
 	var err error
 	i := 0
-	for stencilsDirPath, _ := range stencils {
+	for stencilsDirPath := range stencils {
 		entriesMatrix[i].entries, err = os.ReadDir(stencilsDirPath)
 		if err != nil {
 			return err

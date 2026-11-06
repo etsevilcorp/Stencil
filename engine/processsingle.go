@@ -20,14 +20,15 @@ func ProcessSingle(base draw.Image, baseName string, stencils map[string]string,
 		cfg := cfgs[name]
 		err := cfg.Validate()
 		if err != nil {
-			return err
+			return fmt.Errorf("processsingle failed to validate config: %w", err)
 		}
 
 		path := stencils[name]
 
-		stenciling, err := openImage(filepath.Join(name, path))
+		stPath := filepath.Join(name, path)
+		stenciling, err := openImage(stPath)
 		if err != nil {
-			return err
+			return fmt.Errorf("processsingle failed to process image %v: %w", stPath, err)
 		}
 
 		nameRes = append(nameRes, (strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))))
@@ -45,7 +46,11 @@ func ProcessSingle(base draw.Image, baseName string, stencils map[string]string,
 	}
 	nameRes.Sort()
 
-	err := createImage(filepath.Join(out, fmt.Sprintf("%v-%v", baseName, strings.Join(nameRes, "-"))+".png"), base)
+	newName := fmt.Sprintf("%v-%v", baseName, strings.Join(nameRes, "-")) + ".png"
+	err := createImage(filepath.Join(out, newName), base)
+	if err != nil {
+		return fmt.Errorf("processsingle couldn't create image ")
+	}
 
-	return err
+	return nil
 }

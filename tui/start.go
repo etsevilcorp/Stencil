@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"os"
 
 	"github.com/awesome-gocui/gocui"
 	"github.com/eliukblau/pixterm/pkg/ansimage"
+	"github.com/etsevilcorp/stencil/imageutils"
 	"github.com/etsevilcorp/stencil/stencil"
 )
 
@@ -19,15 +19,9 @@ func Start(stencils stencil.Stencils, basePath string) error {
 	}
 	defer g.Close()
 
-	baseFile, err := os.Open(basePath)
+	base, err := imageutils.OpenImage(basePath)
 	if err != nil {
 		return fmt.Errorf("position: failed to load an image %v: %w", basePath, err)
-	}
-	defer baseFile.Close()
-
-	base, _, err := image.Decode(baseFile)
-	if err != nil {
-		return fmt.Errorf("position: failed to convert file to an image %v: %w", basePath, err)
 	}
 
 	g.SetManagerFunc(layout(base))
@@ -63,7 +57,7 @@ func layout(img image.Image) func(*gocui.Gui) error {
 		// Each terminal row holds two vertical pixels (the half-block trick),
 		// so the pixel height is h*2.
 		ans, err := ansimage.NewScaledFromImage(
-			img, h*2, w,
+			image.NewGray(img.Bounds()), h*2, w,
 			color.RGBA{R: 0, G: 0, B: 0, A: 255},
 			ansimage.ScaleModeFit,
 			ansimage.NoDithering,

@@ -1,15 +1,16 @@
-package engine
+package imageutils
 
 import (
 	"image"
 	"os"
 )
 
-func openImage(path string) (image.Image, error) {
+func OpenImage(path string) (image.Image, error) {
 	stFile, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
+	defer stFile.Close()
 
 	stenciling, _, err := image.Decode(stFile)
 	if err != nil {

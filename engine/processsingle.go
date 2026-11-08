@@ -9,6 +9,7 @@ import (
 
 	_ "image/jpeg"
 
+	"github.com/etsevilcorp/stencil/imageutils"
 	"github.com/etsevilcorp/stencil/stencil"
 )
 
@@ -26,7 +27,7 @@ func ProcessSingle(base draw.Image, baseName string, stencils map[string]string,
 		path := stencils[name]
 
 		stPath := filepath.Join(name, path)
-		stenciling, err := openImage(stPath)
+		stenciling, err := imageutils.OpenImage(stPath)
 		if err != nil {
 			return fmt.Errorf("processsingle failed to process image %v: %w", stPath, err)
 		}
@@ -47,7 +48,7 @@ func ProcessSingle(base draw.Image, baseName string, stencils map[string]string,
 	nameRes.Sort()
 
 	newName := fmt.Sprintf("%v-%v", baseName, strings.Join(nameRes, "-")) + ".png"
-	err := createImage(filepath.Join(out, newName), base)
+	err := imageutils.CreateImage(filepath.Join(out, newName), base)
 	if err != nil {
 		return fmt.Errorf("processsingle couldn't create image ")
 	}

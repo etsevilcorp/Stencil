@@ -1,4 +1,4 @@
-package engine
+package imageutils
 
 import (
 	"image/draw"
@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-func createImage(path string, base draw.Image) error {
+func CreateImage(path string, base draw.Image) error {
 	err := os.MkdirAll(filepath.Dir(path), 0755)
 	if err != nil {
 		return err

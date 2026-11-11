@@ -5,7 +5,6 @@ import (
 	"image/draw"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	_ "image/jpeg"
 
@@ -18,39 +17,21 @@ func ProcessSingle(base draw.Image, baseName string, stencils map[string]string,
 
 	var nameRes = make(sort.StringSlice, 0, len(stencils))
 	for _, name := range stencilsSorted {
-		cfg := cfgs[name]
-		err := cfg.Validate()
-		if err != nil {
-			return fmt.Errorf("processsingle failed to validate config: %w", err)
-		}
-
-		path := stencils[name]
-
-		stPath := filepath.Join(name, path)
-		stenciling, err := imageutils.OpenImage(stPath)
-		if err != nil {
-			return fmt.Errorf("processsingle failed to process image %v: %w", stPath, err)
-		}
-
-		nameRes = append(nameRes, (strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))))
-
-		bounds := stenciling.Bounds()
-		if !cfg.InMax(bounds) {
-			stenciling = cfg.HandleMax(stenciling)
-		}
-		if !cfg.OutMin(bounds) {
-			stenciling = cfg.HandleMin(stenciling)
-		}
-		bounds = stenciling.Bounds() // after minmax
-
-		draw.Draw(base, base.Bounds(), stenciling, cfg.Anchor.Position(cfg.X, cfg.Y, bounds.Dx(), bounds.Dy()), draw.Over)
+		nameRes = append(nameRes, name)
 	}
 	nameRes.Sort()
 
-	newName := fmt.Sprintf("%v-%v", baseName, strings.Join(nameRes, "-")) + ".png"
-	err := imageutils.CreateImage(filepath.Join(out, newName), base)
+	layers, err := LoadLayers(nameRes, cfgs, stencils)
 	if err != nil {
-		return fmt.Errorf("processsingle couldn't create image ")
+		return fmt.Errorf("processsingle: unable to load layers: %w", err)
+	}
+	Draw(base, layers)
+
+	for _, l := range layers {
+		err := imageutils.CreateImage(filepath.Join(out, l.Name+".png"), base)
+		if err != nil {
+			return fmt.Errorf("processsingle couldn't create image %v", l.Name)
+		}
 	}
 
 	return nil

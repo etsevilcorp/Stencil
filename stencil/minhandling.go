@@ -87,10 +87,10 @@ func (s Stencil) stretchAspect(i image.Image) image.Image {
 	var endX, endY = bounds.Dx(), bounds.Dy()
 
 	var change float64 = 1
-	if s.MinHeight != nil && *s.MinHeight < i.Bounds().Dy() {
+	if s.MinHeight != nil && *s.MinHeight > i.Bounds().Dy() {
 		change = float64(*s.MinHeight) / float64(endY)
 	}
-	if s.MinWidth != nil && *s.MinWidth < i.Bounds().Dx() {
+	if s.MinWidth != nil && *s.MinWidth > i.Bounds().Dx() {
 		if changeX := float64(*s.MinWidth) / float64(endX); changeX > change {
 			change = changeX
 		}
